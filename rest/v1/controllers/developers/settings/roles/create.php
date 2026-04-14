@@ -7,6 +7,6 @@ $conn = checkDbConnection($conn);
 
 // make use of classes
 
-$name = $data['name'];
+$role_name = $data['role_name'];
+returnError($role_name);
 
-echo "Hello";

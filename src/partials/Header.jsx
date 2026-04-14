@@ -1,7 +1,7 @@
 import React from "react";
 import { FaIndent } from "react-icons/fa";
 import { MdOutlineLogout, MdOutlineMailOutline } from "react-icons/md";
-import { devNavUrl, urlDeveloper } from "../../functions/functions-general";
+import { devNavUrl, urlDeveloper } from "../functions/functions-general";
 
 const Header = () => {
   const [loading, setLoading] = React.useState(false);
@@ -37,7 +37,7 @@ const Header = () => {
               />
             </button>
             <div className="pl-1">
-              <img src="" alt="" />
+              <img src="qwasdwmj" alt="" />
             </div>
           </div>
         </div>
