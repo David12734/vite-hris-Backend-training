@@ -1,32 +1,26 @@
 <?php
- require 'Database.php';
- require 'Response.php';
 
-function sendResponse($result){
-    $response = new Response();
-    $response->setSuccess(true);
-    $response->setStatusCode(200);
-    $response->setData($result);
-    $response->send();
-}
+require 'Database.php';
+require 'Response.php';
 
-function checkDbConnection(){
-    try{
-        $conn = Database::connectDb();
+function checkDBConnection()
+{
+    try {
+        $conn = Database::connectDB();
         return $conn;
-    }catch(PDOException $error) 
-    {
-    $response = new Response();
-    $error = [];
-    $error['type'] = "invalid_resquest_error";
-    $error['success'] = false;
-    $error['error'] = "Database connection failed";
-    $response->setSuccess(false);
-    $response->setData($error);
-    $response->send();
-
+    } catch (PDOException $error) {
+        $response = new Response();
+        $error = [];
+        $error['type'] = "invalid_request_error";
+        $error['success'] = "false";
+        $error['error'] = "Database connection failed";
+        $response->setSuccess(false);
+        $response->setData($error);
+        $response->send();
+        exit;
     }
 }
+
 
 function checkApiKey()
 {
@@ -327,6 +321,16 @@ function getResultData($query)
     return $data;
 }
 
+// send response
+function sendResponse($result)
+{
+    $response = new Response();
+    $response->setSuccess(true);
+    $response->setStatusCode(200);
+    $response->setData($result);
+    $response->send();
+}
+
 // forbidden access
 function checkAccess()
 {
@@ -440,20 +444,6 @@ function returnSuccess($object, $name, $query, $data = "")
     $returnData["server_datetime"] = date('Y-m-d H:i:s');
     // return $returnData;
     $response->setData($returnData);
-    $response->send();
-    exit;
-}
-
-// return error
-function returnError($msg)
-{
-    $response = new Response();
-    $error = [];
-    $response->setSuccess(false);
-    $error["count"] = 0;
-    $error["success"] = false;
-    $error['error'] = $msg;
-    $response->setData($error);
     $response->send();
     exit;
 }
@@ -647,4 +637,18 @@ function isEmptyItem($val, $secondVal = '')
 {
     if ($val) return $val;
     return $secondVal;
+}
+
+// return error
+function returnError($msg)
+{
+    $response = new Response();
+    $error = [];
+    $response->setSuccess(false);
+    $error["count"] = 0;
+    $error["success"] = false;
+    $error['error'] = $msg;
+    $response->setData($error);
+    $response->send();
+    exit;
 }

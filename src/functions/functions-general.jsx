@@ -1,7 +1,12 @@
+import format from "format";
+
 export const urlPath = "http://localhost/react-vite/viter-hris";
 export const devNavUrl = "";
 export const apiVersion = "/v1";
 export const devApiUrl = urlPath + "/rest";
+
+export const setTimezone = "Asia/Manila";
+
 // ROLES VARIABLE
 export const urlDeveloper = "developer";
 
@@ -15,4 +20,30 @@ export const isEmptyItem = (item, x = "") => {
     result = item;
   }
   return result;
+};
+export const formatDate = (dateVal, val = "", format = "") => {
+  const formatedDate = val;
+  if (typeof dateVal !== "undefined" && dateVal !== "") {
+    // formatting date
+    const event = new Date(dateVal);
+
+    return event.toLocaleString("en", dateOptions(format));
+  }
+  return formatedDate;
+};
+
+export const dateOptions = (format = "") => {
+  let options = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
+  if (format == "short-date") {
+    return {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+  }
+  return options;
 };
