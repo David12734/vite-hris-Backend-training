@@ -10,7 +10,7 @@ class Roles
     public $role_updated;
 
     public $connection;
-    public $lastInsertedID;
+    public $lastInsertedId;
 
     public $tblSettingsRoles;
 
@@ -19,7 +19,8 @@ class Roles
         $this->connection = $db;
         $this->tblSettingsRoles = "settings_roles";
     }
-     // CREATE
+
+    // CREATE
     public function create()
     {
         try {
@@ -30,7 +31,7 @@ class Roles
             $sql .= " role_description, ";
             $sql .= " role_created, ";
             $sql .= " role_updated ";
-            $sql .= " ) values ( ";
+            $sql .= " ) values (";
             $sql .= " :role_is_active, ";
             $sql .= " :role_name, ";
             $sql .= " :role_description, ";
@@ -46,46 +47,99 @@ class Roles
                 "role_updated" => $this->role_updated,
             ]);
             $this->lastInsertedId = $this->connection->lastInsertId();
-
         } catch (PDOException $e) {
             $query = false;
         }
         return $query;
     }
-    // READ ALL
+
+    // READ
     public function readAll()
     {
         try {
-            $sql = "select ";
-            $sql .= " * ";
-            $sql .= " from {$this->tblSettingsRoles} ";
+            $sql =  "select ";
+            $sql .= "* ";
+            $sql .= "from {$this->tblSettingsRoles} ";
             $query = $this->connection->query($sql);
         } catch (PDOException $e) {
-            
-
             $query = false;
         }
         return $query;
     }
-    public function update(){
+    // UPDATE
+
+    public function update()
+    {
         try {
             $sql = "update {$this->tblSettingsRoles} set ";
-            $sql .= " role_name = :role_name, ";
-            $sql .= " role_description = :role_description, ";
-            $sql .= " role_updated = :role_updated ";
-            $sql .= " where role_aid = :role_aid ";
+            $sql .= "role_name = :role_name, ";
+            $sql .= "role_description = :role_description, ";
+            $sql .= "role_updated = :role_updated ";
+            $sql .= "where role_aid = :role_aid ";
             $query = $this->connection->prepare($sql);
             $query->execute([
-                "role_aid" => $this->role_aid,
                 "role_name" => $this->role_name,
                 "role_description" => $this->role_description,
                 "role_updated" => $this->role_updated,
+                "role_aid" => $this->role_aid,
             ]);
         } catch (PDOException $e) {
             returnError($e);
-            
             $query = false;
+        }
+        return $query;
+    }
 
+    public function active()
+    {
+        try {
+            $sql = "update {$this->tblSettingsRoles} set ";
+            $sql .= "role_is_active = :role_is_active, ";
+            $sql .= "role_updated = :role_updated ";
+            $sql .= "where role_aid = :role_aid ";
+            $query = $this->connection->prepare($sql);
+            $query->execute([
+                "role_is_active" => $this->role_is_active,
+                "role_updated" => $this->role_updated,
+                "role_aid" => $this->role_aid,
+            ]);
+        } catch (PDOException $e) {
+            // returnError($e); // use this error if invalid request error
+            $query = false;
+        }
+        return $query;
+    }
+
+    public function delete()
+    {
+        try {
+            $sql = "delete from {$this->tblSettingsRoles} ";
+            $sql .= "where role_aid = :role_aid ";
+            $query = $this->connection->prepare($sql);
+            $query->execute([
+                "role_aid" => $this->role_aid,
+            ]);
+        } catch (PDOException $e) {
+            // returnError($e); // use this error if invalid request error
+            $query = false;
+        }
+        return $query;
+    }
+
+    public function checkName()
+    {
+        try {
+            $sql = "select ";
+            $sql .= "role_name ";
+            $sql .= "from {$this->tblSettingsRoles} ";
+            $sql .= "where role_name = :role_name ";
+            $query = $this->connection->prepare($sql);
+            $query->execute([
+                "role_name" => $this->role_name,
+            ]);
+        } catch (PDOException $e) {
+            // returnError($e); // use this error if invalid request error
+            $query = false;
         }
         return $query;
     }

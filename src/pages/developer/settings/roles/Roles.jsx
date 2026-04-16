@@ -32,7 +32,7 @@ const Roles = () => {
         </div>
         {/* PAGE CONTENT */}
         <div>
-          <RolesList setItemEdit={setItemEdit} />
+          <RolesList itemEdit={itemEdit} setItemEdit={setItemEdit} />
         </div>
       </Layout>
       {store.isAdd && <ModalAddRoles itemEdit={itemEdit} />}

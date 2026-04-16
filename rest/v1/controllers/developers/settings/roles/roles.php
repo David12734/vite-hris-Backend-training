@@ -1,27 +1,40 @@
-<?php 
-// set http header
+<?php
+
+//set http header
 require '../../../../core/header.php';
-// use needed functions 
+// use needed funcions
 require '../../../../core/functions.php';
 // use models
 require '../../../../models/developers/settings/roles/Roles.php';
 
-
-// get payload from frontend
-
+//get payload from frontend
 $body = file_get_contents("php://input");
-$data = json_decode($body,true);
-  
-// CREATE / POST
-if($_SERVER['REQUEST_METHOD'] == 'POST'){
+$data = json_decode($body, true);
+
+//CREATE / POST
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $result = require 'create.php';
     sendResponse($result);
     exit;
 }
 
-// UPDATE / PUT
-if($_SERVER['REQUEST_METHOD'] == 'PUT'){
+//READ / GET
+if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+    $result = require 'read.php';
+    sendResponse($result);
+    exit;
+}
+
+
+//Update / PUT
+if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
     $result = require 'update.php';
+    sendResponse($result);
+    exit;
+}
+//Delete / DELETE
+if ($_SERVER['REQUEST_METHOD'] == 'DELETE') {
+    $result = require 'delete.php';
     sendResponse($result);
     exit;
 }
