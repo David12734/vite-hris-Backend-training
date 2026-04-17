@@ -17,7 +17,6 @@ const SearchBar = ({
     if (e.target.value === "") {
       setOnSearch(!onSearch);
       dispatch(setIsSearch(false));
-      s;
     }
     if (isFilter === true) {
       dispatch(setIsSearch(true));
