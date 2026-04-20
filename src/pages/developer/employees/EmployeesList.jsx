@@ -11,6 +11,16 @@ import FetchingSpinner from "../../../partials/spinners/FetchingSpinner";
 import Loadmore from "../../../partials/Loadmore";
 import Status from "../../../partials/Status";
 import SearchBar from "../../../partials/SearchBar";
+import { FaArchive, FaEdit, FaTrash, FaTrashRestore } from "react-icons/fa";
+import {
+  setIsAdd,
+  setIsArchive,
+  setIsDelete,
+  setIsRestore,
+} from "../../../store/StoreAction";
+import ModalArchive from "../../../partials/modals/ModalArchive";
+import ModalRestore from "../../../partials/modals/ModalRestore";
+import ModalDelete from "../../../partials/modals/ModalDelete";
 
 const EmployeesList = ({ itemEdit, setItemEdit }) => {
   const { store, dispatch } = React.useContext(StoreContext);
@@ -59,6 +69,30 @@ const EmployeesList = ({ itemEdit, setItemEdit }) => {
       fetchNextPage();
     }
   }, [inView]);
+
+  const getEmployeeName = (item) =>
+    `${item.employee_first_name} ${item.employee_middle_name ? `${item.employee_middle_name} ` : ""}${item.employee_last_name}`.trim();
+
+  const handleEdit = (item) => {
+    dispatch(setIsAdd(true));
+    setItemEdit(item);
+  };
+
+  const handleArchive = (item) => {
+    dispatch(setIsArchive(true));
+    setItemEdit(item);
+  };
+
+  const handleRestore = (item) => {
+    dispatch(setIsRestore(true));
+    setItemEdit(item);
+  };
+
+  const handleDelete = (item) => {
+    dispatch(setIsDelete(true));
+    setItemEdit(item);
+  };
+
   return (
     <>
       <div className="flex items-enter justify-between">
@@ -92,6 +126,7 @@ const EmployeesList = ({ itemEdit, setItemEdit }) => {
               <th>Status</th>
               <th>Employee Name</th>
               <th>Email</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -128,10 +163,51 @@ const EmployeesList = ({ itemEdit, setItemEdit }) => {
                           text={`${item.employee_is_active == 1 ? "active" : "inactive"}`}
                         />
                       </td>
-                      <td>
-                        {item.employee_first_name} {item.employee_last_name}
-                      </td>
+                      <td>{getEmployeeName(item)}</td>
                       <td>{item.employee_email}</td>
+                      <td>
+                        <div className="flex items-center gap-3">
+                          {item.employee_is_active == 1 ? (
+                            <>
+                              <button
+                                type="button"
+                                className="tooltip-action-table"
+                                data-tooltip="Edit"
+                                onClick={() => handleEdit(item)}
+                              >
+                                <FaEdit />
+                              </button>
+                              <button
+                                type="button"
+                                className="tooltip-action-table"
+                                data-tooltip="Archive"
+                                onClick={() => handleArchive(item)}
+                              >
+                                <FaArchive />
+                              </button>
+                            </>
+                          ) : (
+                            <>
+                              <button
+                                type="button"
+                                className="tooltip-action-table"
+                                data-tooltip="Restore"
+                                onClick={() => handleRestore(item)}
+                              >
+                                <FaTrashRestore />
+                              </button>
+                              <button
+                                type="button"
+                                className="tooltip-action-table"
+                                data-tooltip="Delete"
+                                onClick={() => handleDelete(item)}
+                              >
+                                <FaTrash />
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      </td>
                     </tr>
                   );
                 })}
@@ -152,6 +228,37 @@ const EmployeesList = ({ itemEdit, setItemEdit }) => {
           />
         </div>
       </div>
+
+      {store.isArchive && itemEdit && (
+        <ModalArchive
+          mysqlApiArchive={`${apiVersion}/controllers/developers/employees/active.php?id=${itemEdit.employee_aid}`}
+          msg="Are you sure you want to archive this record?"
+          successMsg="sucessfully archived."
+          item={{ name: getEmployeeName(itemEdit) }}
+          dataItem={itemEdit}
+          queryKey="employees"
+        />
+      )}
+      {store.isRestore && itemEdit && (
+        <ModalRestore
+          mysqlApiRestore={`${apiVersion}/controllers/developers/employees/active.php?id=${itemEdit.employee_aid}`}
+          msg="Are you sure you want to restore this record?"
+          successMsg="sucessfully restore."
+          item={{ name: getEmployeeName(itemEdit) }}
+          dataItem={itemEdit}
+          queryKey="employees"
+        />
+      )}
+      {store.isDelete && itemEdit && (
+        <ModalDelete
+          mysqlApiDelete={`${apiVersion}/controllers/developers/employees/employees.php?id=${itemEdit.employee_aid}`}
+          msg="Are you sure you want to delete this record?"
+          successMsg="sucessfully deleted."
+          item={{ name: getEmployeeName(itemEdit) }}
+          dataItem={itemEdit}
+          queryKey="employees"
+        />
+      )}
     </>
   );
 };
